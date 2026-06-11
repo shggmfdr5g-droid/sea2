@@ -249,6 +249,7 @@ textarea.fi{height:auto;min-height:56px;padding:8px 10px;resize:vertical}
 <button class="tab" data-panel=dashboard>Dashboard</button>
 
 </div>
+
 <div class=content>
 <div class="tpanel active" id=panel-booking><div class=pad>
 <div class=quick-actions>
@@ -356,10 +357,12 @@ textarea.fi{height:auto;min-height:56px;padding:8px 10px;resize:vertical}
 <div class=log-row><span class=log-time>15:32</span><span class=log-msg>&#128196; COSU6284910_SO.pdf archived</span></div>
 </div>
 </div></div>
-</div>
+</div></div>
 
-</div></div></div>
-<div class=tpanel id=panel-charges><div class=pad>
+</div>
+</div>
+</div></div>
+<div class="tpanel" id=panel-charges><div class=pad>
 <div class=fee-summary>
 <div class=fee-item><div class=fee-val>$12,450.00</div><div class=fee-lbl>Total Charges</div></div>
 <div class=fee-item><div class=fee-val>$8,200.00</div><div class=fee-lbl>Ocean Freight</div></div>
@@ -386,7 +389,7 @@ textarea.fi{height:auto;min-height:56px;padding:8px 10px;resize:vertical}
 <div class=fg><label class=fl>Rate</label><input class=fi value="6.85"></div>
 </div></div></div>
 </div></div>
-<div class=tpanel id=panel-trucking><div class=pad>
+<div class="tpanel" id=panel-trucking><div class=pad>
 <div class=card><div class=chd>&#128666; Trucking Operations<div class=acts><button class="btn btn-p btn-sm" onclick="event.stopPropagation()">New Job</button><button class="btn btn-s btn-sm" onclick="event.stopPropagation()">Assign Driver</button></div></div><div class=cbd>
 <div class=g4>
 <div class=fg><label class=fl>Job No</label><input class=fi value="TRK-2026-0615"></div>
@@ -408,8 +411,9 @@ textarea.fi{height:auto;min-height:56px;padding:8px 10px;resize:vertical}
 <tr><td>TRK-0614</td><td>MSCU9912345</td><td>Li Qiang</td><td>Shekou CFS</td><td>Guangzhou</td><td><span class="tag blue">Loaded</span></td><td>16:00</td></tr>
 <tr><td>TRK-0613</td><td>OOLU7700123</td><td>Wang Lei</td><td>Nansha Port</td><td>Foshan</td><td><span class="tag green">Completed</span></td><td>Jun 5</td></tr>
 <tr><td>TRK-0612</td><td>ONEU5567890</td><td>Chen Ming</td><td>Yantian Port</td><td>Shenzhen CBD</td><td><span class="tag red">Delayed</span></td><td>Jun 6</td></tr>
-</tbody></table></div></div></div></div>
-<div class=tpanel id=panel-lastmile><div class=pad>
+</tbody></table></div></div>
+</div></div>
+<div class="tpanel" id=panel-lastmile><div class=pad>
 <div class=card><div class=chd>&#128230; Last Mile Delivery<div class=acts><button class="btn btn-p btn-sm" onclick="event.stopPropagation()">Schedule</button><button class="btn btn-s btn-sm" onclick="event.stopPropagation()">Track</button></div></div><div class=cbd>
 <div class=g4>
 <div class=fg><label class=fl>Delivery No</label><input class=fi value="LMD-2026-0042"></div>
@@ -430,8 +434,9 @@ textarea.fi{height:auto;min-height:56px;padding:8px 10px;resize:vertical}
 <tr><td>LMD-0042</td><td>ABC Logistics</td><td>Los Angeles</td><td>FedEx Freight</td><td>Jun 22</td><td><span class="tag blue">Pending</span></td></tr>
 <tr><td>LMD-0041</td><td>XYZ Trading</td><td>Long Beach</td><td>UPS Freight</td><td>Jun 20</td><td><span class="tag green">Dispatched</span></td></tr>
 <tr><td>LMD-0040</td><td>Pacific Wholesale</td><td>Oakland</td><td>Old Dominion</td><td>Jun 15</td><td><span class="tag green">Delivered</span></td></tr>
-</tbody></table></div></div></div></div>
-<div class=tpanel id=panel-tracking><div class=pad>
+</tbody></table></div></div>
+</div></div>
+<div class="tpanel" id=panel-tracking><div class=pad>
 <div class=card><div class=chd>&#128506; Shipment Itinerary - COSU6284910<div class=acts><button class="btn btn-p btn-sm" onclick="event.stopPropagation();showTrackingDetail()">View Detail</button></div></div><div class=cbd>
 <div class=itinerary-list>
 <div class=itinerary-item><div class="it-dot port"></div><div class=it-info><div class=it-name>&#128997; Origin: Shenzhen (Yantian)</div><div class=it-days>POL - Port of Loading</div></div><div class=it-cum>Jun 5</div><div class=it-line></div></div>
@@ -465,8 +470,9 @@ textarea.fi{height:auto;min-height:56px;padding:8px 10px;resize:vertical}
 <tr><td>2026-06-07 06:30</td><td>Position update</td><td>26.1N 122.8E</td><td><span class="tag blue">Next</span></td></tr>
 <tr><td>2026-06-11 09:00</td><td>ETA Yokohama</td><td>Yokohama Port</td><td><span class="tag blue">Est.</span></td></tr>
 <tr><td>2026-06-23 10:00</td><td>ETA Los Angeles</td><td>LA Port</td><td><span class="tag blue">Est.</span></td></tr>
-</tbody></table></div></div></div></div>
-<div class=tpanel id=panel-docs><div class=pad>
+</tbody></table></div></div>
+</div></div>
+<div class="tpanel" id=panel-docs><div class=pad>
 <div class=card><div class=chd>&#128196; Document Center<div class=acts><button class="btn btn-p btn-sm" onclick="event.stopPropagation()">Upload</button><button class="btn btn-s btn-sm" onclick="event.stopPropagation()">Generate</button><button class="btn btn-s btn-sm" onclick="event.stopPropagation()">Download All</button></div></div><div class=cbd>
 <table class=tbl><thead><tr><th>Doc Type</th><th>Ref No</th><th>File</th><th>Date</th><th>Status</th><th>Action</th></tr></thead><tbody>
 <tr><td>Bill of Lading</td><td>COSU6284910</td><td>BL_COSU6284910.pdf</td><td>2026-06-05</td><td><span class="tag green">Issued</span></td><td><button class="btn btn-s btn-sm" onclick="event.stopPropagation();showToast('Downloading BL_COSU6284910.pdf','ok')">Download</button></td></tr>
@@ -477,8 +483,9 @@ textarea.fi{height:auto;min-height:56px;padding:8px 10px;resize:vertical}
 <tr><td>Insurance Certificate</td><td>INS-2026-0042</td><td>IC_INS20260042.pdf</td><td>2026-06-05</td><td><span class="tag green">Issued</span></td><td><button class="btn btn-s btn-sm" onclick="event.stopPropagation();showToast('Downloading IC_INS20260042.pdf','ok')">Download</button></td></tr>
 <tr><td>VGM Certificate</td><td>VGM-2026-0042</td><td>VG_VGM20260042.pdf</td><td>2026-06-05</td><td><span class="tag green">Verified</span></td><td><button class="btn btn-s btn-sm" onclick="event.stopPropagation();showToast('Downloading VG_VGM20260042.pdf','ok')">Download</button></td></tr>
 <tr><td>Arrival Notice</td><td>AN-2026-0042</td><td>AN_AN20260042.pdf</td><td>2026-06-20</td><td><span class="tag blue">Est.</span></td><td><button class="btn btn-s btn-sm" onclick="event.stopPropagation();showToast('Not yet available','err')">Download</button></td></tr>
-</tbody></table></div></div></div></div>
-<div class=tpanel id=panel-dashboard><div class=pad>
+</tbody></table></div></div>
+</div></div>
+<div class="tpanel" id=panel-dashboard><div class=pad>
 <div class=dg>
 <div class=dc><div class=dc-title>Total Orders</div><div class=dc-stat up>1,248<span class=sub>+12%</span></div></div>
 <div class=dc><div class=dc-title>On-Time Rate</div><div class=dc-stat up>96.8%<span class=sub>+12%</span></div></div>
@@ -487,10 +494,9 @@ textarea.fi{height:auto;min-height:56px;padding:8px 10px;resize:vertical}
 <div class=dc full><div class=dc-title>Monthly Order Trend</div><div class=dc-chart><canvas id=chartOrders></canvas></div></div>
 <div class=dc><div class=dc-title>Route Distribution</div><div class=dc-chart><canvas id=chartRoutes></canvas></div></div>
 <div class=dc><div class=dc-title>Revenue vs Cost</div><div class=dc-chart><canvas id=chartRevenue></canvas></div></div>
-</div></div></div>
-
 </div>
-<div class=tpanel id=panel-voyage ><iframe src="http://localhost:5090/" id="voyageFrame"></iframe></div>
+</div></div>
+<div class="tpanel" id=panel-voyage><iframe src="http://localhost:5090/" id="voyageFrame"></iframe></div>
 </div>
 </main>
 </div>
@@ -511,7 +517,12 @@ textarea.fi{height:auto;min-height:56px;padding:8px 10px;resize:vertical}
 <div class=modal-overlay id=modalOverlay onclick="if(event.target===this)closeModal()"><div class=modal id=modalBox><div class=modal-hd><span id=modalTitle>Details</span><button class=close onclick="closeModal()">&times;</button></div><div class=modal-bd id=modalBody></div><div class=modal-ft><button class="btn btn-s" onclick="closeModal()">Close</button></div></div></div>
 <div class=toast-ct id=toastContainer></div>
 
+
+<div class=modal-overlay id=modalOverlay onclick="if(event.target===this)closeModal()"><div class=modal id=modalBox><div class=modal-hd><span id=modalTitle>Details</span><button class=close onclick="closeModal()">&times;</button></div><div class=modal-bd id=modalBody></div><div class=modal-ft><button class="btn btn-s" onclick="closeModal()">Close</button></div></div></div>
+<div class=toast-ct id=toastContainer></div>
+
 <script>
+
 // SeaFreight OS - Core Application Logic
 document.addEventListener('DOMContentLoaded', function() {
   initApp();
@@ -808,7 +819,7 @@ document.addEventListener('click',function(e){
   if(!e.target.closest('#voyDest')&&!e.target.closest('#voyDestList')){var l=document.getElementById('voyDestList');if(l)l.classList.remove('show');}
 });
 
+
 </script>
-</div>
 </body>
 </html>
