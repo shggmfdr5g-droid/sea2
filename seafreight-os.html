@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+<meta charset=UTF-8>
+<title>SeaFreight OS</title>
+<style>
+:root{--navy:#082F4D;--navy-l:#0D4B7C;--blue:#1E88D2;--blue-l:#42A5F5;--bg:#F0F4F8;--white:#FFF;--border:#DDE4ED;--text:#1A2332;--text-s:#5A6D80;--text-m:#8FA0B4;--red:#E53935;--green:#00A86B;--amber:#FF8F00;--rad:6px;--font:system-ui,-apple-system,sans-serif;--mono:Consolas,monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:13px;height:100vh;overflow:hidden;line-height:1.5}
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#C0CCDA;border-radius:3px}
+.app{display:flex;height:100vh}
+.sidebar{width:220px;background:linear-gradient(180deg,#061E32,#082F4D);display:flex;flex-direction:column;flex-shrink:0;z-index:100}
+.sb-logo{padding:16px 18px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:8px}
+.sb-logo .icon{width:32px;height:32px;background:linear-gradient(135deg,#1E88D2,#082F4D);border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:14px}
+.sb-logo .txt{color:#fff;font-size:15px;font-weight:700}
+.sb-logo .txt span{color:#42A5F5}
+.sb-nav{flex:1;overflow-y:auto;padding:4px 0}
+.ns-title{padding:14px 18px 6px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,.25)}
+.ns-item{display:flex;align-items:center;gap:8px;padding:9px 18px;color:rgba(255,255,255,.6);cursor:pointer;border-left:3px solid transparent;font-size:12px;transition:all .15s}
+.ns-item:hover{background:rgba(255,255,255,.05);color:#fff}
+.ns-item.active{background:rgba(30,136,210,.18);color:#fff;border-left-color:#1E88D2;font-weight:600}
+.ns-item .badge{margin-left:auto;background:#E53935;color:#fff;font-size:10px;padding:1px 6px;border-radius:8px;font-weight:700}
+.sb-footer{padding:12px 18px;border-top:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.4);font-size:11px}
+.sb-footer .av{width:28px;height:28px;background:#1565A0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;font-weight:700}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.topbar{height:48px;background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:10px;flex-shrink:0}
+.tb-search{flex:1;max-width:440px;position:relative}
+.tb-search input{width:100%;height:32px;padding:0 12px 0 34px;border:1px solid var(--border);border-radius:var(--rad);font-size:12px;background:#F7F9FC;outline:none}
+.tb-search input:focus{border-color:var(--blue);box-shadow:0 0 0 2px rgba(30,136,210,.1)}
+.tb-search .si{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--text-m)}
+.tb-actions{display:flex;gap:6px;margin-left:auto}
+.tb-btn{padding:6px 14px;border:1px solid var(--border);border-radius:var(--rad);background:var(--white);font-size:11px;cursor:pointer;font-weight:500;transition:all .15s}
+.tb-btn:hover{background:#F0F4F8;border-color:var(--blue);color:var(--blue)}
+.tb-btn.accent{background:var(--blue);color:#fff;border-color:var(--blue)}
+.tb-btn.accent:hover{background:var(--navy-l)}
+.statusbar{height:32px;background:var(--white);border-bottom:1px solid #ECF1F7;display:flex;align-items:center;padding:0 16px;gap:20px;font-size:11px;color:var(--text-s);flex-shrink:0;overflow-x:auto}
+.st-item{display:flex;align-items:center;gap:5px;white-space:nowrap}
+.st-item .lbl{color:var(--text-m)}.st-item .val{font-weight:600;color:var(--text);font-family:var(--mono)}
+.st-dot{width:6px;height:6px;border-radius:50%}.st-dot.g{background:var(--green)}.st-dot.a{background:var(--amber)}
+.tabbar{height:38px;background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 10px;flex-shrink:0;overflow-x:auto;gap:2px}
+.tab{padding:7px 14px;border:none;background:none;font-size:11px;color:var(--text-s);cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:all .15s;font-family:var(--font);font-weight:500}
+.tab:hover{color:var(--text);background:rgba(30,136,210,.03)}
+.tab.active{color:var(--navy-l);border-bottom-color:var(--blue);font-weight:700}
+.content{flex:1;overflow:hidden;position:relative}
+.tpanel{display:none;position:absolute;inset:0;overflow-y:auto;overflow-x:hidden}
+.tpanel.active{display:flex;flex-direction:column}
+.tpanel iframe{width:100%;height:100%;border:none}
+.pad{padding:14px 18px;display:flex;flex-direction:column;gap:12px}
+.card{background:var(--white);border-radius:8px;border:1px solid var(--border);box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.chd{padding:10px 14px;border-bottom:1px solid #ECF1F7;font-weight:700;font-size:12px;color:var(--navy);display:flex;align-items:center;gap:6px}
+.chd .acts{margin-left:auto;display:flex;gap:4px}
+.cbd{padding:14px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.fg{margin-bottom:8px}
+.fl{display:block;font-size:10px;font-weight:700;color:var(--text-s);margin-bottom:3px;text-transform:uppercase;letter-spacing:.4px}
+.fi,.fs{width:100%;height:32px;padding:0 10px;border:1px solid var(--border);border-radius:4px;font-size:12px;outline:none;font-family:var(--font);background:var(--white);transition:all .15s}
+.fi:focus,.fs:focus{border-color:var(--blue);box-shadow:0 0 0 2px rgba(30,136,210,.08)}
+.fi.err{border-color:var(--red);background:#FFF5F5}
+textarea.fi{height:auto;min-height:56px;padding:8px 10px;resize:vertical}
+.fs{cursor:pointer;appearance:none;background-image:url(data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%2210%22%20height=%2210%22%20viewBox=%220%200%2010%2010%22%3E%3Cpath%20fill=%22%238FA0B4%22%20d=%22M5%207L1%202h8z%22/%3E%3C/svg%3E);background-repeat:no-repeat;background-position:right 8px center;padding-right:24px}
+.fr{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px}
+.btn{padding:6px 14px;border:1px solid transparent;border-radius:4px;font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;font-family:var(--font);white-space:nowrap;display:inline-flex;align-items:center;gap:4px}
+.btn-p{background:var(--blue);color:#fff;border-color:var(--blue)}.btn-p:hover{background:var(--navy-l)}
+.btn-s{background:var(--white);color:var(--text);border-color:var(--border)}.btn-s:hover{background:#F0F4F8}
+.btn-g{background:var(--green);color:#fff}.btn-g:hover{background:#008040}
+.btn-r{background:var(--red);color:#fff}.btn-r:hover{background:#C62828}
+.btn-sm{padding:3px 8px;font-size:10px}
+.btn-ghost{background:none;border:none;color:var(--text-s);cursor:pointer}.btn-ghost:hover{color:var(--blue)}
+.tbl{width:100%;border-collapse:collapse;font-size:11px}
+.tbl th{padding:8px 10px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;color:var(--text-m);background:#F7F9FC;border-bottom:2px solid var(--border);white-space:nowrap}
+.tbl td{padding:7px 10px;border-bottom:1px solid #ECF1F7;font-family:var(--mono);font-size:11px}
+.tbl tr:hover td{background:#F0F7FF}
+.tbl .r{text-align:right}.tbl .c{text-align:center}
+.ai-pnl{position:fixed;right:0;top:0;bottom:0;width:350px;background:var(--white);border-left:1px solid var(--border);z-index:200;display:flex;flex-direction:column;transform:translateX(350px);transition:transform .25s ease;box-shadow:-2px 0 16px rgba(0,0,0,.1)}
+.ai-pnl.open{transform:translateX(0)}
+.ai-toggle{position:fixed;right:0;top:50%;transform:translateY(-50%);width:30px;height:72px;background:var(--navy);color:#fff;border:none;border-radius:6px 0 0 6px;cursor:pointer;z-index:201;font-size:12px;display:flex;align-items:center;justify-content:center;writing-mode:vertical-rl;font-weight:700;letter-spacing:2px;transition:all .15s}
+.ai-toggle:hover{background:var(--navy-l)}
+.ai-hd{padding:12px 14px;background:var(--navy);color:#fff;display:flex;align-items:center;gap:6px;font-weight:700;font-size:13px}
+.ai-hd .cls{margin-left:auto;background:none;border:none;color:rgba(255,255,255,.7);cursor:pointer;font-size:16px}
+.ai-drop{margin:10px;padding:20px;border:2px dashed var(--border);border-radius:8px;text-align:center;cursor:pointer;transition:all .15s;background:#F8FAFE}
+.ai-drop:hover,.ai-drop.drag{border-color:var(--blue);background:#EBF4FD}
+.ai-drop .dz-icon{font-size:32px;margin-bottom:6px}
+.ai-drop .dz-t{font-size:12px;font-weight:700;color:var(--navy)}.ai-drop .dz-s{font-size:10px;color:var(--text-m)}
+.ai-chat{flex:1;display:flex;flex-direction:column;overflow:hidden;margin:0 10px 10px}
+.ai-msgs{flex:1;overflow-y:auto;padding:6px 0;display:flex;flex-direction:column;gap:6px}
+.ai-msg{padding:8px 10px;border-radius:6px;font-size:11px;line-height:1.4;max-width:88%}
+.ai-msg.u{align-self:flex-end;background:var(--blue);color:#fff}
+.ai-msg.b{align-self:flex-start;background:#F0F4F8;color:var(--text)}
+.ai-msg.b .ail{font-size:9px;font-weight:700;color:var(--blue);margin-bottom:3px;text-transform:uppercase}
+.ai-inp{display:flex;gap:5px;padding-top:6px;border-top:1px solid #ECF1F7}
+.ai-inp input{flex:1;height:32px;padding:0 10px;border:1px solid var(--border);border-radius:4px;font-size:11px;outline:none;font-family:var(--font)}
+.ai-inp button{width:32px;height:32px;background:var(--blue);color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:14px}
+.ai-status{padding:6px 10px;margin:0 10px;background:#E8F5E9;border-radius:4px;font-size:10px;color:var(--green);font-weight:600;text-align:center;display:none}
+.dg{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.dc{background:var(--white);border-radius:8px;border:1px solid var(--border);padding:14px}
+.dc.full{grid-column:1/-1}
+.dc-title{font-size:11px;font-weight:700;color:var(--text-m);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px}
+.dc-stat{font-size:24px;font-weight:800;color:var(--navy)}.dc-stat .sub{font-size:12px;font-weight:400;color:var(--text-m);margin-left:4px}
+.dc-stat.up{color:var(--green)}.dc-stat.down{color:var(--red)}
+.dc-chart{width:100%;height:180px}.dc-chart canvas{width:100%;height:100%}
+.risk-badge{display:inline-flex;padding:1px 7px;border-radius:10px;font-size:10px;font-weight:700}
+.risk-badge.low{background:#E8F5E9;color:var(--green)}
+.risk-badge.med{background:#FFF8E1;color:var(--amber)}
+.risk-badge.high{background:#FFEBEE;color:var(--red)}
+.alert-banner{padding:8px 12px;border-radius:4px;font-size:11px;font-weight:600;display:flex;align-items:center;gap:6px;margin-bottom:8px}
+.alert-banner.warn{background:#FFF8E1;color:#B06D00;border:1px solid #FFE082}
+.alert-banner.err{background:#FFEBEE;color:var(--red);border:1px solid #FFCDD2}
+.alert-banner.info{background:#E3F2FD;color:var(--navy-l);border:1px solid #BBDEFB}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;display:none;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:var(--white);border-radius:8px;box-shadow:0 12px 48px rgba(0,0,0,.2);max-width:700px;width:92%;max-height:80vh;overflow-y:auto}
+.modal-hd{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;font-weight:700;font-size:13px}
+.modal-hd .close{background:none;border:none;font-size:18px;cursor:pointer;color:var(--text-m);margin-left:auto}
+.modal-bd{padding:16px}
+.modal-ft{padding:10px 16px;border-top:1px solid #ECF1F7;display:flex;gap:6px;justify-content:flex-end}
+.toast-ct{position:fixed;top:12px;right:380px;z-index:600;display:flex;flex-direction:column;gap:6px}
+.toast{padding:10px 16px;border-radius:4px;background:var(--white);box-shadow:0 6px 24px rgba(0,0,0,.15);font-size:11px;font-weight:600;display:flex;align-items:center;gap:6px;border-left:3px solid var(--blue);animation:slideIn .25s ease}
+.toast.ok{border-left-color:var(--green)}.toast.err{border-left-color:var(--red)}
+@keyframes slideIn{from{transform:translateX(60px);opacity:0}to{transform:translateX(0);opacity:1}}
+.toggle-sw{position:relative;display:inline-block;width:38px;height:20px}
+.toggle-sw input{opacity:0;width:0;height:0}
+.toggle-sl{position:absolute;cursor:pointer;inset:0;background:#CCC;border-radius:20px;transition:.25s}
+.toggle-sl:before{content:'';position:absolute;height:14px;width:14px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.25s}
+.toggle-sw input:checked+.toggle-sl{background:var(--blue)}
+.toggle-sw input:checked+.toggle-sl:before{transform:translateX(18px)}
+.tag{display:inline-flex;padding:1px 6px;border-radius:3px;font-size:9px;font-weight:700;text-transform:uppercase}
+.tag.blue{background:#E3F2FD;color:#0D4B7C}.tag.green{background:#E8F5E9;color:#00A86B}.tag.red{background:#FFEBEE;color:#E53935}
+.empty-state{text-align:center;padding:32px 16px;color:var(--text-m)}.empty-state .icon{font-size:40px;margin-bottom:8px}.empty-state .t{font-size:13px;font-weight:600;color:var(--text-s)}
+.stitle{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #ECF1F7}
+.highlight-row{animation:highlightFlash 1.5s ease}
+@keyframes highlightFlash{0%{background:#FFF9C4}100%{background:transparent}}
+.fee-summary{display:flex;gap:16px;margin-bottom:12px}
+.fee-item{flex:1;text-align:center;padding:12px;background:var(--white);border-radius:8px;border:1px solid var(--border)}
+.fee-item .fee-val{font-size:20px;font-weight:800;color:var(--navy);font-family:var(--mono)}
+.fee-item .fee-lbl{font-size:10px;color:var(--text-m);text-transform:uppercase;margin-top:2px}
+.port-suggest{position:absolute;top:100%;left:0;right:0;background:var(--white);border:1px solid var(--border);border-radius:0 0 6px 6px;max-height:180px;overflow-y:auto;z-index:55;display:none;box-shadow:0 4px 12px rgba(0,0,0,.1)}
+.port-suggest.show{display:block}
+.port-suggest .ps-item{padding:6px 10px;cursor:pointer;font-size:11px;border-bottom:1px solid #ECF1F7}
+.port-suggest .ps-item:hover{background:#F0F7FF}
+.vessel-dropdown{position:absolute;top:100%;left:0;right:0;background:var(--white);border:1px solid var(--border);border-top:none;border-radius:0 0 6px 6px;max-height:200px;overflow-y:auto;z-index:50;display:none;box-shadow:0 4px 12px rgba(0,0,0,.1)}
+.vessel-dropdown.show{display:block}
+.vessel-dd-item{padding:8px 12px;cursor:pointer;font-size:12px;border-bottom:1px solid #ECF1F7;display:flex;align-items:center;gap:8px}
+.vessel-dd-item:hover{background:#E3F2FD}
+.vessel-dd-item .vs-name{font-weight:600;color:var(--navy)}
+.vessel-dd-item .vs-info{font-size:10px;color:var(--text-m);margin-left:auto}
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid #DDE4ED;border-top-color:var(--blue);border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.pricing-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.pc-card{border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center;transition:all .2s}
+.pc-card:hover{border-color:var(--blue);box-shadow:0 4px 16px rgba(30,136,210,.1)}
+.pc-card.recommended{border-color:var(--blue);background:#F8FAFE}
+.pc-card .pc-name{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:4px}
+.pc-card .pc-price{font-size:22px;font-weight:800;color:var(--navy);font-family:var(--mono)}
+.pc-card .pc-tag{font-size:10px;background:var(--blue);color:#fff;padding:2px 8px;border-radius:10px;display:inline-block;margin-bottom:6px}
+.itinerary-list{display:flex;flex-direction:column;gap:0}
+.itinerary-item{display:flex;align-items:center;gap:10px;padding:6px 0;position:relative}
+.itinerary-item .it-dot{width:10px;height:10px;border-radius:50%;background:var(--blue);flex-shrink:0;z-index:1}
+.itinerary-item .it-dot.port{width:14px;height:14px;background:var(--navy);border:3px solid var(--blue)}
+.itinerary-item .it-line{position:absolute;left:4px;top:16px;bottom:-6px;width:2px;background:#DDE4ED;z-index:0}
+.itinerary-item .it-info{flex:1}
+.itinerary-item .it-name{font-size:12px;font-weight:600;color:var(--text)}
+.itinerary-item .it-days{font-size:10px;color:var(--text-m)}
+.itinerary-item .it-cum{font-size:11px;font-weight:700;color:var(--navy);font-family:var(--mono);min-width:36px;text-align:right}
+.quick-actions{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:14px}
+.qa-card{padding:12px;background:var(--white);border-radius:8px;border:1px solid var(--border);text-align:center;cursor:pointer;transition:all .15s}
+.qa-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.1);border-color:var(--blue)}
+.qa-card .qa-icon{font-size:22px;margin-bottom:4px}
+.qa-card .qa-label{font-size:10px;font-weight:600;color:var(--text-s)}
+</style>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+</head><body>
+<div class=app>
+<aside class=sidebar>
+<div class=sb-logo><div class=icon>S</div><div class=txt>SeaFreight <span>OS</span></div></div>
+<nav class=sb-nav>
+<div class=ns-title>Operations</div>
+<div class=ns-item data-panel=booking><span class=nav-icon>B</span>Booking Management<span class=badge>3</span></div>
+<div class=ns-item data-panel=charges><span class=nav-icon>C</span>Charge Details</div>
+<div class=ns-item data-panel=trucking><span class=nav-icon>T</span>Trucking</div>
+<div class=ns-item data-panel=lastmile><span class=nav-icon>L</span>Last Mile Delivery</div>
+<div class=ns-item data-panel=tracking><span class=nav-icon>S</span>Cargo Tracking<span class=badge>2</span></div>
+<div class=ns-item data-panel=docs><span class=nav-icon>D</span>E-Documents</div>
+<div class=ns-item data-panel=voyage><span class=nav-icon>V</span>Voyage Intelligence</div>
+<div class=ns-title>Intelligence</div>
+<div class=ns-item data-panel=dashboard><span class=nav-icon>D</span>Dashboard</div>
+
+</nav>
+<div class=sb-footer><div class=av>OP</div>Operator Portal v2.0</div>
+</aside>
+<main class=main>
+<header class=topbar>
+<div class=tb-search><span class=si>&#128269;</span><input type=text placeholder="Search by Job No, SO No, Container No, BL No..."></div>
+<div class=tb-actions>
+<button class="tb-btn accent">&#128269; Track Shipment</button>
+<button class=tb-btn>&#128196; Receive Invoice</button>
+</div></header>
+<div class=statusbar>
+<div class=st-item><span class="st-dot g"></span><span class=lbl>STT No:</span><span class=val>STT-2026-0042</span></div>
+<div class=st-item><span class=lbl>BL No:</span><span class=val>COSU6284910</span></div>
+<div class=st-item><span class=lbl>File No:</span><span class=val>FL-2026-0815</span></div>
+<div class=st-item><span class=lbl>Job No:</span><span class=val>JOB-2605-0042</span></div>
+<div class=st-item><span class="st-dot g"></span><span class=lbl>Lock Status:</span><span class=val>Unlocked</span></div>
+<div class=st-item><span class=lbl>Job Date:</span><span class=val>2026-06-05</span></div>
+<div class=st-item><span class="st-dot g"></span><span class=lbl>Leg Status:</span><span class=val>In Transit</span></div>
+</div>
+<div class=tabbar>
+<button class="tab active" data-panel=booking>Booking</button>
+<button class="tab" data-panel=charges>Charges</button>
+<button class="tab" data-panel=trucking>Trucking</button>
+<button class="tab" data-panel=lastmile>Last Mile</button>
+<button class="tab" data-panel=tracking>Tracking</button>
+<button class="tab" data-panel=docs>E-Docs</button>
+<button class="tab" data-panel=voyage>Voyage Intel</button>
+<button class="tab" data-panel=dashboard>Dashboard</button>
+
+</div>
+<div class=content>
+<div class="tpanel active" id=panel-booking><div class=pad>
+<div class=quick-actions>
+<div class=qa-card><div class=qa-icon>&#128230;</div><div class=qa-label>Book Space</div></div>
+<div class=qa-card><div class=qa-icon>&#128273;</div><div class=qa-label>Cut-off</div></div>
+<div class=qa-card><div class=qa-icon>&#128221;</div><div class=qa-label>SI</div></div>
+<div class=qa-card><div class=qa-icon>&#128666;</div><div class=qa-label>Truck</div></div>
+<div class=qa-card><div class=qa-icon>&#128178;</div><div class=qa-label>Invoice</div></div>
+<div class=qa-card><div class=qa-icon>&#128188;</div><div class=qa-label>Docs</div></div>
+</div>
+<div class="alert-banner warn">&#9888; Port congestion: 67% delay risk. Book early.</div>
+<div class=card><div class=chd>&#128101; Parties &amp; Transport<div class=acts><button class="btn btn-p btn-sm">Book Space</button><button class="btn btn-s btn-sm">Cut Off</button></div></div><div class=cbd><div class=fr>
+<div class=fg><label class=fl>Shipper</label><input class=fi value="ABC Trading Co., Ltd."></div>
+<div class=fg><label class=fl>Consignee</label><input class=fi value="XYZ Logistics Inc."></div>
+<div class=fg><label class=fl>Notify Party</label><input class=fi value="Global Freight LLC"></div>
+<div class=fg><label class=fl>CargoWise ID</label><input class=fi value="CW-88492"></div>
+</div></div></div>
+<div class=card><div class=chd>&#128666; Transport Details</div><div class=cbd><div class=fr>
+<div class=fg><label class=fl>Carrier</label><input class=fi value="COSCO"></div>
+<div class=fg><label class=fl>Actual Carrier</label><input class=fi value="OOCL"></div>
+<div class=fg><label class=fl>Supplier</label><input class=fi value="SITC"></div>
+<div class=fg><label class=fl>Carrier BL No</label><input class=fi value="COSU6284910"></div>
+<div class=fg><label class=fl>Carrier Product</label><input class=fi value="AEU3"></div>
+<div class=fg><label class=fl>Freight Terms</label><input class=fi value="PREPAID"></div>
+<div class=fg><label class=fl>Payment Method</label><input class=fi value="T/T 30 Days"></div>
+</div></div></div>
+<div class=card><div class=chd>&#9973; Ports & Schedule</div><div class=cbd><div class=fr>
+<div class=fg><label class=fl>POL</label><input class=fi value="Shanghai"></div>
+<div class=fg><label class=fl>POD</label><input class=fi value="Los Angeles"></div>
+<div class=fg><label class=fl>Inland CY Origin</label><input class=fi value="Shanghai CY"></div>
+<div class=fg><label class=fl>Inland CY Dest</label><input class=fi value="Los Angeles CY"></div>
+<div class=fg><label class=fl>Transshipment</label><input class=fi value="Busan"></div>
+</div></div></div>
+<div class=card><div class=chd>&#128755; Vessel Schedule &amp; Risk</div><div class=cbd><div class=fr>
+<div class=fg><label class=fl>Vessel</label><input class=fi value="COSCO PRIDE"></div>
+<div class=fg><label class=fl>Voyage No</label><input class=fi value="053E"></div>
+<div class=fg><label class=fl>ETD</label><input class=fi value="2026-06-15"><span class="risk-badge med">Delay 67%</span></div>
+<div class=fg><label class=fl>ATD</label><input class=fi value="--"></div>
+<div class=fg><label class=fl>ETA</label><input class=fi value="2026-07-01"><span class="risk-badge low">On Track</span></div>
+<div class=fg><label class=fl>ATA</label><input class=fi value="--"></div>
+<div class=fg><label class=fl>SI Cut-off</label><input class=fi value="2026-06-10"></div>
+<div class=fg><label class=fl>CY Cut-off</label><input class=fi value="2026-06-13"></div>
+</div></div></div>
+<div class=card><div class=chd>&#128230; Cargo &amp; Container</div><div class=cbd><div class=g4>
+<div class=fg><label class=fl>Container Type</label><input class=fi value="40GP"></div>
+<div class=fg><label class=fl>Container No</label><input class=fi value="COSU8001234"></div>
+<div class=fg><label class=fl>Seal No</label><input class=fi value="SEAL88912"></div>
+<div class=fg><label class=fl>Pieces</label><input class=fi value="240 CTNS"></div>
+<div class=fg><label class=fl>Gross Wt(kg)</label><input class=fi value="18,500"></div>
+<div class=fg><label class=fl>Volume(CBM)</label><input class=fi value="56.8"></div>
+<div class=fg><label class=fl>Net Wt(kg)</label><input class=fi value="17,200"></div>
+<div class=fg><label class=fl>HS Code</label><input class=fi value="8471.30"></div>
+</div><div class=fr><div class=fg><label class=fl>Commodity</label><input class=fi value="Electronics"></div><div class=fg><label class=fl>Cargo Desc</label><textarea class=fi>Consumer electronics, packed in original cartons.</textarea></div></div></div></div>
+<div class=card><div class=chd>&#128196; Additional Info</div><div class=cbd><div class=fr>
+<div class=fg><label class=fl>Special Instructions</label><textarea class=fi>Handle with care. Temp: 15-25C.</textarea></div>
+<div class=fg><label class=fl>Booking Remarks</label><input class=fi value="Priority - Gold Customer"></div>
+<div class=fg><label class=fl>Project No</label><input class=fi value="PRJ-2026-0042"></div>
+<div class=fg><label class=checkbox-label><input type=checkbox checked> Insurance Required</label></div>
+<div class=fg><label class=checkbox-label><input type=checkbox> Letter of Credit</label></div>
+<div class=fg><label class=fl>Multi-Carrier</label><label class=toggle-sw><input type=checkbox><span class=toggle-sl></span></label></div>
+</div></div></div>
+<div class=card><div class=chd>&#128176; Smart Pricing (3 Options)</div><div class=cbd><div class=pricing-cards>
+<div class="pc-card "><div class=pc-tag>Save 12%</div><div class=pc-name>Lowest Cost</div><div class=pc-price>$3,850</div><button class="btn btn-p btn-sm">Select</button></div>
+<div class="pc-card recommended"><div class=pc-tag>18 days</div><div class=pc-name>Fastest</div><div class=pc-price>$4,420</div><button class="btn btn-p btn-sm">Select</button></div>
+<div class="pc-card "><div class=pc-tag>99.2%</div><div class=pc-name>Most Reliable</div><div class=pc-price>$5,150</div><button class="btn btn-p btn-sm">Select</button></div>
+</div></div></div>
+</div></div>
+<div class=tpanel id=panel-charges><div class=pad>
+<div class=fee-summary>
+<div class=fee-item><div class=fee-val>$12,450.00</div><div class=fee-lbl>Total Charges</div></div>
+<div class=fee-item><div class=fee-val>$8,200.00</div><div class=fee-lbl>Ocean Freight</div></div>
+<div class=fee-item><div class=fee-val>$2,150.00</div><div class=fee-lbl>Surcharges</div></div>
+<div class=fee-item><div class=fee-val>$2,100.00</div><div class=fee-lbl>Local Charges</div></div>
+</div>
+<div class=card><div class=chd>&#128179; Charge Details<div class=acts><button class="btn btn-p btn-sm">Add</button><button class="btn btn-s btn-sm">Edit</button><button class="btn btn-r btn-sm">Delete</button><button class="btn btn-s btn-sm">Export Excel</button></div></div><div class=cbd>
+<table class=tbl><thead><tr><th>Code</th><th>Name</th><th>Leg</th><th>Qty</th><th>Unit Price</th><th>Amount</th><th>Tax</th><th>Status</th></tr></thead><tbody>
+<tr><td>OF01</td><td>Ocean Freight</td><td>POL-POD</td><td class=c>1</td><td class=r>$8,200</td><td class=r>$8,200</td><td>0%</td><td><span class="tag green">OK</span></td></tr>
+<tr><td>BA01</td><td>BAF</td><td>POL-POD</td><td class=c>1</td><td class=r>$850</td><td class=r>$850</td><td>0%</td><td><span class="tag green">OK</span></td></tr>
+<tr><td>CA01</td><td>CAF</td><td>POL-POD</td><td class=c>1</td><td class=r>$320</td><td class=r>$320</td><td>0%</td><td><span class="tag green">OK</span></td></tr>
+<tr><td>TH01</td><td>THC Origin</td><td>POL</td><td class=c>1</td><td class=r>$180</td><td class=r>$180</td><td>0%</td><td><span class="tag green">OK</span></td></tr>
+<tr><td>TH02</td><td>THC Dest</td><td>POD</td><td class=c>1</td><td class=r>$220</td><td class=r>$220</td><td>0%</td><td><span class="tag green">OK</span></td></tr>
+<tr><td>DO01</td><td>Documentation</td><td>--</td><td class=c>1</td><td class=r>$45</td><td class=r>$45</td><td>VAT 6%</td><td><span class="tag green">OK</span></td></tr>
+<tr><td>CU01</td><td>Customs</td><td>POD</td><td class=c>1</td><td class=r>$350</td><td class=r>$350</td><td>0%</td><td><span class="tag blue">Pend</span></td></tr>
+<tr><td>TR01</td><td>Trucking</td><td>POD-Door</td><td class=c>1</td><td class=r>$8,200</td><td class=r>$8,200</td><td>VAT 9%</td><td><span class="tag blue">Pend</span></td></tr>
+</tbody></table></div></div>
+<div class=card><div class=chd>&#128196; Voucher Info</div><div class=cbd><div class=g4>
+<div class=fg><label class=fl>Voucher No</label><input class=fi value="VC-2026-0815"></div>
+<div class=fg><label class=fl>Date</label><input class=fi value="2026-06-05"></div>
+<div class=fg><label class=fl>Dept</label><input class=fi value="OPS-SHA"></div>
+<div class=fg><label class=fl>Status</label><input class=fi value="Pending"></div>
+<div class=fg><label class=fl>Currency</label><input class=fi value="USD"></div>
+<div class=fg><label class=fl>Rate</label><input class=fi value="6.85"></div>
+</div></div></div>
+</div></div>
+<div class=tpanel id=panel-trucking><div class=pad>
+<div class=card><div class=chd>&#128666; Trucking Operations<div class=acts><button class="btn btn-p btn-sm" onclick="event.stopPropagation()">New Job</button><button class="btn btn-s btn-sm" onclick="event.stopPropagation()">Assign Driver</button></div></div><div class=cbd>
+<div class=g4>
+<div class=fg><label class=fl>Job No</label><input class=fi value="TRK-2026-0615"></div>
+<div class=fg><label class=fl>Container No</label><input class=fi value="COSU8001234"></div>
+<div class=fg><label class=fl>Truck Plate</label><input class=fi value="B·A88362"></div>
+<div class=fg><label class=fl>Driver</label><input class=fi value="Zhang Wei"></div>
+<div class=fg><label class=fl>Phone</label><input class=fi value="+86 138-0013-8000"></div>
+<div class=fg><label class=fl>Pickup Location</label><input class=fi value="Shenzhen Yantian CFS"></div>
+<div class=fg><label class=fl>Delivery Location</label><input class=fi value="Dongguan Factory"></div>
+<div class=fg><label class=fl>Status</label><input class=fi value="In Transit" style="color:var(--green);font-weight:700"></div>
+<div class=fg><label class=fl>Scheduled Pickup</label><input class=fi value="2026-06-07 08:00"></div>
+<div class=fg><label class=fl>ETA Delivery</label><input class=fi value="2026-06-07 14:30"></div>
+<div class=fg><label class=fl>Mileage(km)</label><input class=fi value="185"></div>
+<div class=fg><label class=fl>Cost(CNY)</label><input class=fi value="2,800"></div>
+</div></div></div>
+<div class=card><div class=chd>&#128202; Active Trucking Jobs</div><div class=cbd>
+<table class=tbl><thead><tr><th>Job No</th><th>Container</th><th>Driver</th><th>From</th><th>To</th><th>Status</th><th>ETA</th></tr></thead><tbody>
+<tr><td>TRK-0615</td><td>COSU8001234</td><td>Zhang Wei</td><td>Yantian CFS</td><td>Dongguan</td><td><span class="tag green">Active</span></td><td>14:30</td></tr>
+<tr><td>TRK-0614</td><td>MSCU9912345</td><td>Li Qiang</td><td>Shekou CFS</td><td>Guangzhou</td><td><span class="tag blue">Loaded</span></td><td>16:00</td></tr>
+<tr><td>TRK-0613</td><td>OOLU7700123</td><td>Wang Lei</td><td>Nansha Port</td><td>Foshan</td><td><span class="tag green">Completed</span></td><td>Jun 5</td></tr>
+<tr><td>TRK-0612</td><td>ONEU5567890</td><td>Chen Ming</td><td>Yantian Port</td><td>Shenzhen CBD</td><td><span class="tag red">Delayed</span></td><td>Jun 6</td></tr>
+</tbody></table></div></div></div></div>
+<div class=tpanel id=panel-lastmile><div class=pad>
+<div class=card><div class=chd>&#128230; Last Mile Delivery<div class=acts><button class="btn btn-p btn-sm" onclick="event.stopPropagation()">Schedule</button><button class="btn btn-s btn-sm" onclick="event.stopPropagation()">Track</button></div></div><div class=cbd>
+<div class=g4>
+<div class=fg><label class=fl>Delivery No</label><input class=fi value="LMD-2026-0042"></div>
+<div class=fg><label class=fl>Recipient</label><input class=fi value="ABC Logistics Inc."></div>
+<div class=fg><label class=fl>Address</label><input class=fi value="123 Harbor Blvd, Los Angeles, CA 90731"></div>
+<div class=fg><label class=fl>Contact</label><input class=fi value="+1 (310) 555-0192"></div>
+<div class=fg><label class=fl>Carrier</label><input class=fi value="FedEx Freight"></div>
+<div class=fg><label class=fl>Tracking No</label><input class=fi value="FXF-9281-0042"></div>
+<div class=fg><label class=fl>Delivery Date</label><input class=fi value="2026-06-22"></div>
+<div class=fg><label class=fl>Time Window</label><input class=fi value="09:00 - 17:00"></div>
+<div class=fg><label class=fl>Pieces</label><input class=fi value="240 CTNS / 12 Pallets"></div>
+<div class=fg><label class=fl>Weight(kg)</label><input class=fi value="18,500"></div>
+<div class=fg><label class=fl>Status</label><input class=fi value="Awaiting Vessel Arrival" style="color:var(--amber);font-weight:700"></div>
+<div class=fg><label class=fl>Delivery Cost</label><input class=fi value="$1,850.00"></div>
+</div></div></div>
+<div class=card><div class=chd>&#128202; Pending Last Mile Deliveries</div><div class=cbd>
+<table class=tbl><thead><tr><th>Delivery No</th><th>Recipient</th><th>City</th><th>Carrier</th><th>Scheduled</th><th>Status</th></tr></thead><tbody>
+<tr><td>LMD-0042</td><td>ABC Logistics</td><td>Los Angeles</td><td>FedEx Freight</td><td>Jun 22</td><td><span class="tag blue">Pending</span></td></tr>
+<tr><td>LMD-0041</td><td>XYZ Trading</td><td>Long Beach</td><td>UPS Freight</td><td>Jun 20</td><td><span class="tag green">Dispatched</span></td></tr>
+<tr><td>LMD-0040</td><td>Pacific Wholesale</td><td>Oakland</td><td>Old Dominion</td><td>Jun 15</td><td><span class="tag green">Delivered</span></td></tr>
+</tbody></table></div></div></div></div>
+<div class=tpanel id=panel-tracking><div class=pad>
+<div class=card><div class=chd>&#128506; Shipment Itinerary - COSU6284910<div class=acts><button class="btn btn-p btn-sm" onclick="event.stopPropagation();showTrackingDetail()">View Detail</button></div></div><div class=cbd>
+<div class=itinerary-list>
+<div class=itinerary-item><div class="it-dot port"></div><div class=it-info><div class=it-name>&#128997; Origin: Shenzhen (Yantian)</div><div class=it-days>POL - Port of Loading</div></div><div class=it-cum>Jun 5</div><div class=it-line></div></div>
+<div class=itinerary-item><div class=it-dot></div><div class=it-info><div class=it-name>Sailed from Yantian</div><div class=it-days>Departed on schedule</div></div><div class=it-cum>+0d</div><div class=it-line></div></div>
+<div class=itinerary-item><div class=it-dot></div><div class=it-info><div class=it-name>En Route: South China Sea</div><div class=it-days>In transit, 18kn speed</div></div><div class=it-cum>+1.5d</div><div class=it-line></div></div>
+<div class=itinerary-item><div class=it-dot></div><div class=it-info><div class=it-name>&#127483;&#127480; Taiwan Strait Passage</div><div class=it-days>Estimated crossing</div></div><div class=it-cum>+3d</div><div class=it-line></div></div>
+<div class=itinerary-item><div class=it-dot></div><div class=it-info><div class=it-name>East China Sea Transit</div><div class=it-days>Open ocean navigation</div></div><div class=it-cum>+5d</div><div class=it-line></div></div>
+<div class=itinerary-item><div class=it-dot></div><div class=it-info><div class=it-name>&#127471;&#127477; Yokohama Call (Transshipment)</div><div class=it-days>Estimated port call</div></div><div class=it-cum>+8d</div><div class=it-line></div></div>
+<div class=itinerary-item><div class=it-dot></div><div class=it-info><div class=it-name>North Pacific Crossing</div><div class=it-days>Transpacific voyage</div></div><div class=it-cum>+12d</div><div class=it-line></div></div>
+<div class=itinerary-item><div class=it-dot></div><div class=it-info><div class=it-name>US West Coast Approach</div><div class=it-days>Entering US waters</div></div><div class=it-cum>+16d</div><div class=it-line></div></div>
+<div class=itinerary-item><div class=it-dot></div><div class=it-info><div class=it-name>&#127482;&#127480; Los Angeles Port Arrival</div><div class=it-days>Berthing & customs clearance</div></div><div class=it-cum>+18d</div><div class=it-line></div></div>
+<div class=itinerary-item><div class="it-dot port"></div><div class=it-info><div class=it-name>&#127987; Destination: Los Angeles (LAX)</div><div class=it-days>POD - Port of Discharge</div></div><div class=it-cum>Jun 23</div></div>
+</div></div></div>
+<div class=card><div class=chd>&#128230; Container Status</div><div class=cbd>
+<div class=g4>
+<div class=fg><label class=fl>Container No</label><input class=fi value="COSU8001234"></div>
+<div class=fg><label class=fl>Type</label><input class=fi value="40GP Dry Van"></div>
+<div class=fg><label class=fl>Seal</label><input class=fi value="SEAL88912"></div>
+<div class=fg><label class=fl>Current Position</label><input class=fi value="25.2N, 122.5E (East China Sea)" style="color:var(--green);font-weight:700"></div>
+<div class=fg><label class=fl>Speed</label><input class=fi value="18.2 knots"></div>
+<div class=fg><label class=fl>Temperature</label><input class=fi value="22.4C (Normal)"></div>
+<div class=fg><label class=fl>Humidity</label><input class=fi value="48% (Safe)"></div>
+<div class=fg><label class=fl>Next Port</label><input class=fi value="Yokohama, Japan"></div>
+</div></div></div>
+<div class=card><div class=chd>&#128197; Event Log</div><div class=cbd>
+<table class=tbl><thead><tr><th>Date/Time UTC</th><th>Event</th><th>Location</th><th>Status</th></tr></thead><tbody>
+<tr><td>2026-06-05 14:30</td><td>Container loaded</td><td>Shenzhen Yantian</td><td><span class="tag green">Done</span></td></tr>
+<tr><td>2026-06-05 22:15</td><td>Vessel departed</td><td>Yantian Port</td><td><span class="tag green">Done</span></td></tr>
+<tr><td>2026-06-06 08:00</td><td>Customs cleared</td><td>CN Customs</td><td><span class="tag green">Done</span></td></tr>
+<tr><td>2026-06-06 18:45</td><td>Position update</td><td>24.8N 121.1E</td><td><span class="tag green">Auto</span></td></tr>
+<tr><td>2026-06-07 06:30</td><td>Position update</td><td>26.1N 122.8E</td><td><span class="tag blue">Next</span></td></tr>
+<tr><td>2026-06-11 09:00</td><td>ETA Yokohama</td><td>Yokohama Port</td><td><span class="tag blue">Est.</span></td></tr>
+<tr><td>2026-06-23 10:00</td><td>ETA Los Angeles</td><td>LA Port</td><td><span class="tag blue">Est.</span></td></tr>
+</tbody></table></div></div></div></div>
+<div class=tpanel id=panel-docs><div class=pad>
+<div class=card><div class=chd>&#128196; Document Center<div class=acts><button class="btn btn-p btn-sm" onclick="event.stopPropagation()">Upload</button><button class="btn btn-s btn-sm" onclick="event.stopPropagation()">Generate</button><button class="btn btn-s btn-sm" onclick="event.stopPropagation()">Download All</button></div></div><div class=cbd>
+<table class=tbl><thead><tr><th>Doc Type</th><th>Ref No</th><th>File</th><th>Date</th><th>Status</th><th>Action</th></tr></thead><tbody>
+<tr><td>Bill of Lading</td><td>COSU6284910</td><td>BL_COSU6284910.pdf</td><td>2026-06-05</td><td><span class="tag green">Issued</span></td><td><button class="btn btn-s btn-sm" onclick="event.stopPropagation();showToast('Downloading BL_COSU6284910.pdf','ok')">Download</button></td></tr>
+<tr><td>Commercial Invoice</td><td>INV-2026-0042</td><td>CI_INV20260042.pdf</td><td>2026-06-05</td><td><span class="tag green">Issued</span></td><td><button class="btn btn-s btn-sm" onclick="event.stopPropagation();showToast('Downloading CI_INV20260042.pdf','ok')">Download</button></td></tr>
+<tr><td>Packing List</td><td>PL-2026-0042</td><td>PL_PL20260042.pdf</td><td>2026-06-05</td><td><span class="tag green">Issued</span></td><td><button class="btn btn-s btn-sm" onclick="event.stopPropagation();showToast('Downloading PL_PL20260042.pdf','ok')">Download</button></td></tr>
+<tr><td>Certificate of Origin</td><td>CO-2026-0042</td><td>CO_CO20260042.pdf</td><td>2026-06-05</td><td><span class="tag green">Issued</span></td><td><button class="btn btn-s btn-sm" onclick="event.stopPropagation();showToast('Downloading CO_CO20260042.pdf','ok')">Download</button></td></tr>
+<tr><td>Customs Declaration</td><td>CD-2026-0042</td><td>CD_CD20260042.pdf</td><td>2026-06-06</td><td><span class="tag blue">Pending</span></td><td><button class="btn btn-s btn-sm" onclick="event.stopPropagation();showToast('Downloading CD_CD20260042.pdf','ok')">Download</button></td></tr>
+<tr><td>Insurance Certificate</td><td>INS-2026-0042</td><td>IC_INS20260042.pdf</td><td>2026-06-05</td><td><span class="tag green">Issued</span></td><td><button class="btn btn-s btn-sm" onclick="event.stopPropagation();showToast('Downloading IC_INS20260042.pdf','ok')">Download</button></td></tr>
+<tr><td>VGM Certificate</td><td>VGM-2026-0042</td><td>VG_VGM20260042.pdf</td><td>2026-06-05</td><td><span class="tag green">Verified</span></td><td><button class="btn btn-s btn-sm" onclick="event.stopPropagation();showToast('Downloading VG_VGM20260042.pdf','ok')">Download</button></td></tr>
+<tr><td>Arrival Notice</td><td>AN-2026-0042</td><td>AN_AN20260042.pdf</td><td>2026-06-20</td><td><span class="tag blue">Est.</span></td><td><button class="btn btn-s btn-sm" onclick="event.stopPropagation();showToast('Not yet available','err')">Download</button></td></tr>
+</tbody></table></div></div></div></div>
+<div class=tpanel id=panel-dashboard><div class=pad>
+<div class=dg>
+<div class=dc><div class=dc-title>Total Orders</div><div class=dc-stat up>1,248<span class=sub>+12%</span></div></div>
+<div class=dc><div class=dc-title>On-Time Rate</div><div class=dc-stat up>96.8%<span class=sub>+12%</span></div></div>
+<div class=dc><div class=dc-title>Monthly Revenue</div><div class=dc-stat up>.2M<span class=sub>+12%</span></div></div>
+<div class=dc><div class=dc-title>Active Vessels</div><div class=dc-stat down>42<span class=sub>-3%</span></div></div>
+<div class=dc full><div class=dc-title>Monthly Order Trend</div><div class=dc-chart><canvas id=chartOrders></canvas></div></div>
+<div class=dc><div class=dc-title>Route Distribution</div><div class=dc-chart><canvas id=chartRoutes></canvas></div></div>
+<div class=dc><div class=dc-title>Revenue vs Cost</div><div class=dc-chart><canvas id=chartRevenue></canvas></div></div>
+</div></div></div>
+
+</div>
+<div class=tpanel id=panel-voyage ><iframe src="http://localhost:5090/" id="voyageFrame"></iframe></div>
+</main>
+</div>
+<button class=ai-toggle onclick="toggleAI()">AI ASSIST</button>
+<div class=ai-pnl id=aiPanel>
+<div class=ai-hd>&#129302; AI Smart Assistant<button class=cls onclick="toggleAI()">&times;</button></div>
+<div class=ai-drop id=aiDropzone ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event)" onclick="document.getElementById('aiFileInput').click()">
+<div class=dz-icon>&#128229;</div><div class=dz-t>Drop Documents Here</div><div class=dz-s>AI will auto-extract data & fill forms</div>
+<input type=file id=aiFileInput style=display:none onchange="handleFileSelect(event)" accept=".pdf,.jpg,.png,.docx,.xlsx" multiple>
+</div>
+<div class=ai-status id=aiScanStatus>&#10003; AI Extracted 12 fields from document</div>
+<div class=ai-chat><div class=ai-msgs id=aiMessages>
+<div class=ai-msg b><div class=ail>AI Assistant</div>Hello! I can help with shipping queries, document processing, and system navigation. Try uploading a document or asking about rates.</div>
+</div>
+<div class=ai-inp><input type=text id=aiChatInput placeholder="Ask about shipping, system usage, or industry rules..." onkeydown="if(event.key==='Enter')sendAIMessage()"><button onclick="sendAIMessage()">&#9654;</button></div>
+</div>
+</div>
+<div class=modal-overlay id=modalOverlay onclick="if(event.target===this)closeModal()"><div class=modal id=modalBox><div class=modal-hd><span id=modalTitle>Details</span><button class=close onclick="closeModal()">&times;</button></div><div class=modal-bd id=modalBody></div><div class=modal-ft><button class="btn btn-s" onclick="closeModal()">Close</button></div></div></div>
+<div class=toast-ct id=toastContainer></div>
+
+<script>
+// SeaFreight OS - Core Application Logic
+document.addEventListener('DOMContentLoaded', function() {
+  initApp();
+  updateClock();
+  setInterval(updateClock, 1000);
+});
+
+function initApp() {
+  document.querySelectorAll('.ns-item[data-panel]').forEach(function(item) {
+    item.addEventListener('click', function() { switchPanel(this.dataset.panel); });
+  });
+  document.querySelectorAll('.tab').forEach(function(tab) {
+    tab.addEventListener('click', function() { if(this.dataset.panel) switchPanel(this.dataset.panel); });
+  });
+  switchPanel('booking');
+  initDashboardCharts();
+}
+
+function switchPanel(name) {
+  document.querySelectorAll('.tpanel').forEach(function(p) { p.classList.remove('active'); });
+  document.querySelectorAll('.ns-item').forEach(function(n) { n.classList.remove('active'); });
+  document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
+  var panel = document.getElementById('panel-' + name);
+  if (panel) panel.classList.add('active');
+  document.querySelectorAll('.ns-item[data-panel=' + name + ']').forEach(function(n){n.classList.add('active')});
+  document.querySelectorAll('.tab[data-panel=' + name + ']').forEach(function(t){t.classList.add('active')});
+  var bc = document.getElementById('breadcrumb');
+  if(bc) bc.textContent = name;
+}
+
+function updateClock() {
+  var el = document.getElementById('clock');
+  if(el) el.textContent = new Date().toLocaleString();
+}
+
+function toggleAI() {
+  document.getElementById('aiPanel').classList.toggle('open');
+}
+
+function sendAIMessage() {
+  var inp = document.getElementById('aiChatInput');
+  var msg = inp.value.trim(); if(!msg) return;
+  var msgs = document.getElementById('aiMessages');
+  msgs.innerHTML += '<div class=ai-msg u>' + msg + '</div>';
+  inp.value = '';
+  var replies = [
+    'Shanghai to LA 40GP: ,800-,500. COSCO/Maersk best schedules.',
+    'HS 8471.30 needs FCC cert for US import. Flagged for compliance review.',
+    'LA/LB port congestion moderate. 2-3 day dwell expected.',
+    'For 15-25C cargo, use reefer container. OOCL has availability.',
+    'Booking STT-2026-0042 confirmed. ETD Jun 15, ETA Jul 1. COSCO PRIDE 053E.',
+  ];
+  var r = replies[Math.floor(Math.random()*replies.length)];
+  setTimeout(function(){
+    msgs.innerHTML += '<div class=ai-msg b><div class=ail>AI Assistant</div>' + r + '</div>';
+    msgs.scrollTop = msgs.scrollHeight;
+  }, 600);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function handleDrop(e) { e.preventDefault(); e.target.classList.remove('drag'); var files = e.dataTransfer.files; if(files.length) uploadAndParse(files[0]); }
+function handleFileSelect(e) { if(e.target.files.length) uploadAndParse(e.target.files[0]); }
+function uploadAndParse(file) {
+  var s = document.getElementById('aiScanStatus');
+  s.style.display = 'block'; s.textContent = 'Uploading and analyzing...';
+  var fd = new FormData(); fd.append('file', file);
+  fetch('/api/parse-booking', { method: 'POST', body: fd })
+    .then(function(r) { return r.json(); })
+    .then(function(result) {
+      if (result.success) {
+        fillFormFields(result.data);
+        var count = Object.values(result.data).filter(function(v) { return v; }).length;
+        s.innerHTML = '&#10003; Extracted ' + count + ' fields from ' + (result.filename || file.name);
+        showToast(count + ' fields extracted', 'ok');
+      } else {
+        s.innerHTML = '&#10060; Error: ' + (result.error || 'unknown');
+      }
+      setTimeout(function() { s.style.display = 'none'; }, 5000);
+    })
+    .catch(function(err) {
+      s.innerHTML = '&#10060; Upload failed: ' + err.message;
+      setTimeout(function() { s.style.display = 'none'; }, 5000);
+    });
+}
+function fillFormFields(data) {
+  var labels = document.querySelectorAll('.fl');
+  var lm = {};
+  labels.forEach(function(l) {
+    var inp = l.parentElement.querySelector('input, textarea');
+    if (inp) lm[l.textContent.trim().toLowerCase()] = inp;
+  });
+  var map = {
+    shipper: 'shipper', consignee: 'consignee',
+    notify_party: 'notify party', pol: 'pol', pod: 'pod',
+    vessel: 'vessel', container_type: 'container type',
+    pieces: 'pieces', gross_weight: 'gross wt(kg)',
+    volume: 'volume(cbm)', hs_code: 'hs code',
+    commodity: 'commodity', cargo_desc: 'cargo desc',
+    etd: 'etd', eta: 'eta', carrier: 'carrier',
+    freight_terms: 'freight terms',
+  };
+  var filled = 0;
+  Object.keys(map).forEach(function(k) {
+    var v = data[k]; if (!v) return;
+    var labelKey = map[k];
+    if (lm[labelKey]) { lm[labelKey].value = v; filled++; }
+  });
+  return filled;
+}
+function initDashboardCharts() {
+  drawBarChart('chartOrders', [120,145,168,190,210,235,248], ['Jan','Feb','Mar','Apr','May','Jun','Jul'], '#1E88D2');
+  drawPieChart('chartRoutes', [{l:'Asia-NA',v:45},{l:'Asia-EU',v:30},{l:'Intra-Asia',v:15},{l:'Other',v:10}]);
+  drawBarChart('chartRevenue', [2.8,3.1,2.9,3.2,3.0,3.2], ['Jan','Feb','Mar','Apr','May','Jun'], '#00A86B');
+}
+
+function drawBarChart(id, data, labels, color) {
+  var c = document.getElementById(id); if(!c) return;
+  var ctx = c.getContext('2d');
+  var w = c.parentElement.clientWidth || 400;
+  var h = 180;
+  c.width = w; c.height = h;
+  ctx.fillStyle = '#F7F9FC'; ctx.fillRect(0,0,w,h);
+  var max = Math.max.apply(null, data);
+  var bw = (w - 60) / data.length;
+  for(var i = 0; i < data.length; i++) {
+    var bh = (data[i] / max) * (h - 40);
+    var x = 40 + i * bw;
+    var y = h - 20 - bh;
+    ctx.fillStyle = color;
+    ctx.fillRect(x + 5, y, bw - 10, bh);
+    ctx.fillStyle = '#5A6D80';
+    ctx.font = '10px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(labels[i], x + bw/2, h - 4);
+    ctx.fillText(data[i], x + bw/2, y - 4);
+  }
+}
+
+function drawPieChart(id, segments) {
+  var c = document.getElementById(id); if(!c) return;
+  var ctx = c.getContext('2d');
+  var w = c.parentElement.clientWidth || 300;
+  var h = 180;
+  c.width = w; c.height = h;
+  var cx = w / 2, cy = h / 2, r = Math.min(cx, cy) - 10;
+  var colors = ['#1E88D2', '#00A86B', '#FF8F00', '#7B1FA2'];
+  var total = 0;
+  for(var i = 0; i < segments.length; i++) total += segments[i].v;
+  var angle = 0;
+  for(var i = 0; i < segments.length; i++) {
+    var slice = (segments[i].v / total) * 2 * Math.PI;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, r, angle, angle + slice);
+    ctx.fillStyle = colors[i];
+    ctx.fill();
+    angle += slice;
+  }
+}
+
+function showToast(msg, type) {
+  var ct = document.getElementById('toastContainer');
+  var t = document.createElement('div');
+  t.className = 'toast ' + (type || '');
+  t.textContent = msg;
+  ct.appendChild(t);
+  setTimeout(function() { t.remove(); }, 3000);
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+
+function showTrackingDetail() {
+  // 读取当前Tracking面板中的实时数据
+  var tpanel = document.getElementById('panel-tracking');
+  var inputs = tpanel.querySelectorAll('input.fi');
+  var tm = {};
+  inputs.forEach(function(inp) {
+    var lbl = inp.parentElement.querySelector('.fl');
+    if (lbl) tm[lbl.textContent.trim().toLowerCase()] = inp;
+  });
+  var cno = (tm['container no'] && tm['container no'].value) || 'COSU8001234';
+  var seal = (tm['seal'] && tm['seal'].value) || 'SEAL88912';
+  
+  // 读取起点终点
+  var items = tpanel.querySelectorAll('.itinerary-item');
+  var pol = 'Shenzhen (Yantian)';
+  var pod = 'Los Angeles (LAX)';
+  if (items.length > 0) {
+    var first = items[0].querySelector('.it-name');
+    if (first) pol = first.textContent.replace('Origin: ', '');
+    var last = items[items.length - 1].querySelector('.it-name');
+    if (last) pod = last.textContent.replace('Destination: ', '');
+  }
+  var overlay = document.getElementById('modalOverlay');
+  document.getElementById('modalTitle').textContent = 'Cargo Tracking Detail - COSU6284910';
+    var overlay = document.getElementById('modalOverlay');
+  document.getElementById('modalTitle').textContent = 'Cargo Tracking Detail - ' + cno;
+  document.getElementById('modalBody').innerHTML = '<div class=itinerary-list>' +
+    '<div class=itinerary-item><div class="it-dot port"></div><div class=it-info><div class=it-name>Shenzhen (Yantian) - POL</div><div class=it-days>ETD: 2026-06-05 22:15 | ATD: 2026-06-05 22:15</div></div><div class=it-cum>Jun 5</div><div class=it-line></div></div>' +
+    '<div class=itinerary-item><div class=it-dot></div><div class=it-info><div class=it-name>South China Sea Transit</div><div class=it-days>18kn | Distance covered: 420nm</div></div><div class=it-cum>+1.5d</div><div class=it-line></div></div>' +
+    '<div class=itinerary-item><div class=it-dot></div><div class=it-info><div class=it-name>Taiwan Strait Passage</div><div class=it-days>Crossing at 25.2N 122.5E</div></div><div class=it-cum>+3d</div><div class=it-line></div></div>' +
+    '<div class=itinerary-item><div class=it-dot></div><div class=it-info><div class=it-name>East China Sea Transit</div><div class=it-days>Open ocean | 18.2kn</div></div><div class=it-cum>+5d</div><div class=it-line></div></div>' +
+    '<div class=itinerary-item><div class=it-dot></div><div class=it-info><div class=it-name>Yokohama, Japan - Transshipment</div><div class=it-days>ETA: 2026-06-13 | Est. dwell: 24h</div></div><div class=it-cum>+8d</div><div class=it-line></div></div>' +
+    '<div class=itinerary-item><div class=it-dot></div><div class=it-info><div class=it-name>North Pacific Crossing</div><div class=it-days>Transpacific | 4,800nm</div></div><div class=it-cum>+12d</div><div class=it-line></div></div>' +
+    '<div class=itinerary-item><div class=it-dot></div><div class=it-info><div class=it-name>US West Coast Approach</div><div class=it-days>Entering US EEZ waters</div></div><div class=it-cum>+16d</div><div class=it-line></div></div>' +
+    '<div class=itinerary-item><div class=it-dot></div><div class=it-info><div class=it-name>Los Angeles Port Pilot</div><div class=it-days>Berthing at berth LA-302</div></div><div class=it-cum>+18d</div><div class=it-line></div></div>' +
+    '<div class=itinerary-item><div class="it-dot port"></div><div class=it-info><div class=it-name>Los Angeles (LAX) - POD</div><div class=it-days>ETA: 2026-06-23 10:00 | Customs clearance est. 2-3 days</div></div><div class=it-cum>Jun 23</div></div>' +
+    '</div><br><div class=alert-banner info>Container ' + cno + ' - Seal ' + seal + ' intact. All temperature/humidity logs normal.</div>';
+  overlay.classList.add('open');
+}
+
+</script>
+</body>
+</html>
