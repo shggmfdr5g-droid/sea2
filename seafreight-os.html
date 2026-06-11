@@ -168,6 +168,37 @@ textarea.fi{height:auto;min-height:56px;padding:8px 10px;resize:vertical}
 .qa-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.1);border-color:var(--blue)}
 .qa-card .qa-icon{font-size:22px;margin-bottom:4px}
 .qa-card .qa-label{font-size:10px;font-weight:600;color:var(--text-s)}
+
+/* CargoWare AI Smart Booking */
+.format-badges{display:flex;gap:4px;flex-wrap:wrap;justify-content:center;margin-top:6px}
+.fmt-badge{padding:2px 8px;border-radius:10px;font-size:9px;font-weight:700;background:#E3F2FD;color:#0D4B7C}
+.fmt-badge.pdf{background:#FFEBEE;color:#C62828}
+.fmt-badge.docx{background:#E3F2FD;color:#1565C0}
+.fmt-badge.xlsx{background:#E8F5E9;color:#2E7D32}
+.fmt-badge.img{background:#FFF3E0;color:#E65100}
+.ai-score{display:flex;align-items:center;gap:6px;padding:6px 10px;background:#E8F5E9;border-radius:4px;font-size:10px;font-weight:700;color:#2E7D32;margin-top:6px}
+.rpa-header{padding:10px 14px;background:linear-gradient(135deg,#082F4D,#0D4B7C);color:#fff;display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;border-radius:8px 8px 0 0}
+.robot-card{display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid #ECF1F7;border-radius:6px;font-size:11px}
+.robot-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.robot-dot.online{background:var(--green);animation:pulse 1.5s infinite}
+.robot-dot.busy{background:var(--amber)}
+.robot-dot.idle{background:var(--text-m)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.edi-badge{padding:2px 6px;border-radius:3px;font-size:9px;font-weight:700}
+.edi-badge.active{background:#E8F5E9;color:#2E7D32}
+.edi-badge.inactive{background:#FFF3E0;color:#E65100}
+.monitor-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.monitor-card{text-align:center;padding:12px;background:var(--white);border-radius:8px;border:1px solid var(--border)}
+.monitor-card .m-val{font-size:24px;font-weight:800;font-family:var(--mono)}
+.monitor-card .m-lbl{font-size:10px;color:var(--text-m);margin-top:2px;text-transform:uppercase}
+.monitor-card .m-sub{font-size:9px;color:var(--text-s)}
+.auto-booking-log{max-height:160px;overflow-y:auto}
+.auto-booking-log .log-row{padding:4px 0;font-size:10px;border-bottom:1px solid #F0F4F8;display:flex;gap:8px}
+.log-row .log-time{color:var(--text-m);font-family:var(--mono);white-space:nowrap}
+.log-row .log-msg{color:var(--text-s)}
+.highlight-red{background:#FFEBEE!important;border-color:#EF9A9A!important;animation:redPulse .8s ease 3}
+@keyframes redPulse{0%,100%{box-shadow:0 0 0 0 rgba(229,57,53,.3)}50%{box-shadow:0 0 0 4px rgba(229,57,53,0)}}
+
 </style>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
@@ -283,7 +314,50 @@ textarea.fi{height:auto;min-height:56px;padding:8px 10px;resize:vertical}
 <div class="pc-card "><div class=pc-tag>Save 12%</div><div class=pc-name>Lowest Cost</div><div class=pc-price>$3,850</div><button class="btn btn-p btn-sm">Select</button></div>
 <div class="pc-card recommended"><div class=pc-tag>18 days</div><div class=pc-name>Fastest</div><div class=pc-price>$4,420</div><button class="btn btn-p btn-sm">Select</button></div>
 <div class="pc-card "><div class=pc-tag>99.2%</div><div class=pc-name>Most Reliable</div><div class=pc-price>$5,150</div><button class="btn btn-p btn-sm">Select</button></div>
+
+
+<div class=card style=margin-bottom:12px>
+<div class=rpa-header>&#129302; RPA Auto-Booking Robot Pool</div>
+<div class=cbd style=padding:12px>
+<div style=display:flex;gap:10px;margin-bottom:10px>
+<div class=robot-card style=flex:1><div class="robot-dot online"></div><div><b>Robot #01</b><br><span style=color:var(--green)>Booking COSCO</span></div><span style=margin-left:auto;font-size:10px;color:var(--text-m)>45s</span></div>
+<div class=robot-card style=flex:1><div class="robot-dot online"></div><div><b>Robot #02</b><br><span style=color:var(--green)>Booking OOCL</span></div><span style=margin-left:auto;font-size:10px;color:var(--text-m)>1m</span></div>
+<div class=robot-card style=flex:1><div class="robot-dot idle"></div><div><b>Robot #03</b><br><span style=color:var(--text-m)>Standby</span></div><span style=margin-left:auto;font-size:10px;color:var(--text-m)>Idle</span></div>
+</div>
+<div><button class="btn btn-p btn-sm" onclick="triggerRPA()">&#9654; Start Auto-Booking</button> <span style=font-size:10px;color:var(--text-m)>24/7 Cloud</span></div>
+<div class=auto-booking-log id=rpaLog style=margin-top:8px>
+<div class=log-row><span class=log-time>16:28</span><span class=log-msg>&#10003; Logged into COSCO e-Booking</span></div>
+<div class=log-row><span class=log-time>16:28</span><span class=log-msg>&#10003; Submitted booking to COSCO</span></div>
+<div class=log-row><span class=log-time>16:29</span><span class=log-msg>&#10003; Logged into OOCL SmartHub</span></div>
 </div></div></div>
+
+<div style=display:grid;grid-template-columns:1fr 1fr;gap:12px>
+<div class=card>
+<div class=chd>&#128225; EDI Booking <span class="edi-badge active" style=margin-left:auto>Active</span></div>
+<div class=cbd style=font-size:11px>
+<div style=display:flex;justify-content:space-between;padding:4px 0><span>COSCO INTTRA</span><span style=color:var(--green)>&#10003;</span></div>
+<div style=display:flex;justify-content:space-between;padding:4px 0><span>ONE EDI</span><span style=color:var(--green)>&#10003;</span></div>
+<div style=display:flex;justify-content:space-between;padding:4px 0><span>Maersk MaC</span><span style=color:var(--green)>&#10003;</span></div>
+<div style=display:flex;justify-content:space-between;padding:4px 0><span>OOCL</span><span style=color:var(--text-m)>Pending</span></div>
+<br><button class="btn btn-p btn-sm" onclick="sendEDI()">&#128225; Send EDI</button>
+</div></div>
+<div class=card>
+<div class=chd>&#128065; 24/7 Auto-Monitor <span style=margin-left:auto;font-size:10px;color:var(--green)>&#10003; Running</span></div>
+<div class=cbd>
+<div class=monitor-grid>
+<div class=monitor-card><div class=m-val style=color:var(--blue)>47</div><div class=m-lbl>Emails</div><div class=m-sub>Today</div></div>
+<div class=monitor-card><div class=m-val style=color:var(--green)>12</div><div class=m-lbl>SO Captured</div><div class=m-sub>Auto-filed</div></div>
+<div class=monitor-card><div class=m-val style=color:var(--amber)>5</div><div class=m-lbl>Pending</div><div class=m-sub>Need attention</div></div>
+</div>
+<div class=auto-booking-log id=monitorLog style=margin-top:8px;max-height:120px>
+<div class=log-row><span class=log-time>16:28</span><span class=log-msg>&#128233; booking@ - New SO from COSCO</span></div>
+<div class=log-row><span class=log-time>16:15</span><span class=log-msg>&#127760; ONE SmartHub - Space released</span></div>
+<div class=log-row><span class=log-time>15:50</span><span class=log-msg>&#10003; Auto-sent SO to shipper</span></div>
+<div class=log-row><span class=log-time>15:32</span><span class=log-msg>&#128196; COSU6284910_SO.pdf archived</span></div>
+</div>
+</div></div>
+</div>
+
 </div></div>
 <div class=tpanel id=panel-charges><div class=pad>
 <div class=fee-summary>
@@ -423,7 +497,7 @@ textarea.fi{height:auto;min-height:56px;padding:8px 10px;resize:vertical}
 <div class=ai-pnl id=aiPanel>
 <div class=ai-hd>&#129302; AI Smart Assistant<button class=cls onclick="toggleAI()">&times;</button></div>
 <div class=ai-drop id=aiDropzone ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event)" onclick="document.getElementById('aiFileInput').click()">
-<div class=dz-icon>&#128229;</div><div class=dz-t>Drop Documents Here</div><div class=dz-s>AI will auto-extract data & fill forms</div>
+<div class=dz-icon>&#129302;</div><div class=dz-t>Drop Booking Forms Here</div><div class=dz-s>AI + OCR Smart Recognition</div><div class=format-badges><span class="fmt-badge pdf">PDF</span><span class="fmt-badge docx">DOCX</span><span class="fmt-badge xlsx">XLSX</span><span class="fmt-badge img">JPG/PNG</span></div><div class=ai-score id=aiAccuracy style=display:none>99.2% Accuracy</div>
 <input type=file id=aiFileInput style=display:none onchange="handleFileSelect(event)" accept=".pdf,.jpg,.png,.docx,.xlsx" multiple>
 </div>
 <div class=ai-status id=aiScanStatus>&#10003; AI Extracted 12 fields from document</div>
@@ -649,6 +723,89 @@ function showTrackingDetail() {
     '</div><br><div class=alert-banner info>Container ' + cno + ' - Seal ' + seal + ' intact. All temperature/humidity logs normal.</div>';
   overlay.classList.add('open');
 }
+
+
+
+// === Smart Pricing & AI Functions ===
+function triggerRPA() {
+  var log = document.getElementById('rpaLog');
+  var now = new Date().toTimeString().substring(0,8);
+  log.innerHTML += '<div class=log-row><span class=log-time>' + now + '</span><span class=log-msg>&#129302; Auto-booking on COSCO...</span></div>';
+  showToast('RPA robot booking started', 'ok');
+  setTimeout(function(){
+    log.innerHTML += '<div class=log-row><span class=log-time>' + new Date().toTimeString().substring(0,8) + '</span><span class=log-msg>&#10003; SO received! ETD/ETA captured</span></div>';
+    showToast('Auto-booking complete', 'ok');
+    log.scrollTop = log.scrollHeight;
+  }, 3000);
+  log.scrollTop = log.scrollHeight;
+}
+
+function sendEDI() {
+  showToast('EDI 315 sent to COSCO INTTRA', 'ok');
+  setTimeout(function(){ showToast('EDI 301 confirmation received', 'ok'); }, 2000);
+}
+
+function showTraModal() {
+  var overlay = document.getElementById('modalOverlay');
+  document.getElementById('modalTitle').textContent = 'Cargo Tracking Detail';
+  document.getElementById('modalBody').innerHTML = '<div class=itinerary-list>' +
+    '<div class=itinerary-item><div class="it-dot port"></div><div class=it-info><div class=it-name>Shenzhen (Yantian) - POL</div><div class=it-days>ETD: 2026-06-05 22:15</div></div><div class=it-cum>Day 0</div><div class=it-line></div></div>' +
+    '<div class=itinerary-item><div class=it-dot></div><div class=it-info><div class=it-name>South China Sea</div><div class=it-days>18kn | 420nm</div></div><div class=it-cum>+1.5d</div><div class=it-line></div></div>' +
+    '<div class=itinerary-item><div class=it-dot></div><div class=it-info><div class=it-name>Taiwan Strait</div><div class=it-days>25.2N 122.5E</div></div><div class=it-cum>+3d</div><div class=it-line></div></div>' +
+    '<div class=itinerary-item><div class=it-dot></div><div class=it-info><div class=it-name>East China Sea</div><div class=it-days>18.2kn</div></div><div class=it-cum>+5d</div><div class=it-line></div></div>' +
+    '<div class=itinerary-item><div class=it-dot></div><div class=it-info><div class=it-name>Yokohama, Japan</div><div class=it-days>ETA: Jun 13</div></div><div class=it-cum>+8d</div><div class=it-line></div></div>' +
+    '<div class=itinerary-item><div class=it-dot></div><div class=it-info><div class=it-name>North Pacific</div><div class=it-days>4,800nm</div></div><div class=it-cum>+12d</div><div class=it-line></div></div>' +
+    '<div class=itinerary-item><div class=it-dot></div><div class=it-info><div class=it-name>US West Coast</div><div class=it-days>Entering US EEZ</div></div><div class=it-cum>+16d</div><div class=it-line></div></div>' +
+    '<div class=itinerary-item><div class=it-dot></div><div class=it-info><div class=it-name>LA Port Pilot</div><div class=it-days>Berthing LA-302</div></div><div class=it-cum>+18d</div><div class=it-line></div></div>' +
+    '<div class=itinerary-item><div class="it-dot port"></div><div class=it-info><div class=it-name>Los Angeles - POD</div><div class=it-days>ETA: Jun 23 | Customs 2-3d</div></div><div class=it-cum>Day 18</div></div>' +
+    '</div><br><div class=alert-banner info>Container COSU8001234 - Seal SEAL88912 intact.</div>';
+  overlay.classList.add('open');
+}
+
+// === Voyage Intelligence ===
+var voyagePorts = [
+  'Shanghai','Shenzhen (Yantian)','Shenzhen (Shekou)','Ningbo','Qingdao',
+  'Guangzhou (Nansha)','Tianjin','Xiamen','Dalian','Hong Kong',
+  'Los Angeles','Long Beach','New York','Savannah','Seattle',
+  'Vancouver','Rotterdam','Hamburg','Antwerp','Valencia',
+  'Tokyo','Yokohama','Busan','Singapore','Port Klang','Jebel Ali'
+];
+function showVoyPorts(t){var l=document.getElementById(t==='origin'?'voyOriginList':'voyDestList');l.innerHTML=voyagePorts.map(function(p){return '<div class=ps-item onclick="selectVoyPort(\''+t+'\',\''+p+'\')">'+p+'</div>';}).join('');l.classList.add('show');}
+function filterVoyPorts(t){var i=document.getElementById(t==='origin'?'voyOrigin':'voyDest');var l=document.getElementById(t==='origin'?'voyOriginList':'voyDestList');var q=i.value.toLowerCase();l.innerHTML=voyagePorts.filter(function(p){return p.toLowerCase().includes(q);}).map(function(p){return '<div class=ps-item onclick="selectVoyPort(\''+t+'\',\''+p+'\')">'+p+'</div>';}).join('');l.classList.add('show');}
+function selectVoyPort(t,p){document.getElementById(t==='origin'?'voyOrigin':'voyDest').value=p;document.getElementById(t==='origin'?'voyOriginList':'voyDestList').classList.remove('show');}
+function searchVoyages(){
+  var o=document.getElementById('voyOrigin').value.trim();
+  var d=document.getElementById('voyDest').value.trim();
+  var r=document.getElementById('voyResults');
+  if(!o||!d){showToast('Select both ports','err');return;}
+  var vs=[{n:'COSCO PRIDE 053E',c:'COSCO',e:'2026-06-12',a:'2026-06-30',dy:18},{n:'ONE APUS 042W',c:'ONE',e:'2026-06-15',a:'2026-07-05',dy:20},{n:'MSC DIANA 025E',c:'MSC',e:'2026-06-10',a:'2026-06-28',dy:18},{n:'OOCL HAMBURG 018W',c:'OOCL',e:'2026-06-18',a:'2026-07-08',dy:20}];
+  var h='<div style=text-align:left><b>'+o+' &#10142; '+d+'</b> - '+vs.length+' vessels</div>';
+  vs.forEach(function(v){h+='<div style="background:var(--white);border:1px solid var(--border);border-radius:8px;padding:12px;margin-top:8px;display:flex;align-items:center;gap:12px;text-align:left"><span style=font-size:24px>&#128752;</span><div style=flex:1><b>'+v.n+'</b><br><span style=font-size:11px;color:var(--text-m)>'+v.c+'</span></div><div style=text-align:center><span style=font-size:10px;color:var(--text-m)>ETD</span><br>'+v.e+'</div><div style=text-align:center><span style=font-size:10px;color:var(--text-m)>ETA</span><br>'+v.a+'</div><div style=text-align:center><span style=font-size:10px;color:var(--text-m)>Transit</span><br><b style=color:var(--green)>'+v.dy+'d</b></div></div>';});
+  r.innerHTML=h;showToast(vs.length+' vessels found','ok');
+}
+
+// === 24/7 Monitor Simulation ===
+var monitorStarted=false;
+function startMonitor(){
+  if(monitorStarted)return;monitorStarted=true;
+  var es=['&#128233; booking@ - New SO from Maersk','&#128233; ops@ - SI cutoff from ONE','&#127760; COSCO - Space released','&#10003; Auto-sent to shipper','&#128196; Booking confirmation archived'];
+  var idx=0;
+  setInterval(function(){
+    var log=document.getElementById('monitorLog');if(!log)return;
+    var now=new Date().toTimeString().substring(0,8);
+    log.insertAdjacentHTML('afterbegin','<div class=log-row><span class=log-time>'+now+'</span><span class=log-msg>'+es[idx]+'</span></div>');
+    if(log.children.length>10)log.lastChild.remove();
+    var b=document.querySelector('.ns-item[data-panel=tracking] .badge');if(b)b.textContent=(parseInt(b.textContent)||1)+1;
+    idx=(idx+1)%es.length;
+  },20000);
+}
+document.addEventListener('DOMContentLoaded',function(){setTimeout(startMonitor,5000);});
+
+// Close port dropdowns
+document.addEventListener('click',function(e){
+  if(!e.target.closest('#voyOrigin')&&!e.target.closest('#voyOriginList')){var l=document.getElementById('voyOriginList');if(l)l.classList.remove('show');}
+  if(!e.target.closest('#voyDest')&&!e.target.closest('#voyDestList')){var l=document.getElementById('voyDestList');if(l)l.classList.remove('show');}
+});
 
 </script>
 </body>
