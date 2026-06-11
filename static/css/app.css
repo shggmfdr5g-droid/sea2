@@ -1,0 +1,197 @@
+﻿* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif; background: #f0f2f5; color: #333; }
+
+/* Navbar */
+.navbar { display: flex; align-items: center; background: #1a1a2e; color: #fff; padding: 0 20px; height: 52px; position: sticky; top: 0; z-index: 1000; }
+.nav-brand { font-size: 18px; font-weight: 700; margin-right: 40px; letter-spacing: 1px; }
+.nav-tabs { display: flex; gap: 4px; }
+.nav-tab { color: #aaa; text-decoration: none; padding: 8px 18px; border-radius: 6px; transition: all 0.2s; font-size: 14px; }
+.nav-tab:hover { color: #fff; background: rgba(255,255,255,0.08); }
+.nav-tab.active { color: #fff; background: #0f3460; font-weight: 600; }
+
+/* Layout */
+.main-container { max-width: 1500px; margin: 0 auto; padding: 12px 16px; }
+.page { display: none; }
+.page.active { display: block; }
+
+/* Search Bar */
+.search-bar { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+.search-bar input { flex: 1; min-width: 120px; padding: 10px 14px; border: 1px solid #d9d9d9; border-radius: 8px; font-size: 14px; outline: none; transition: border-color 0.2s, box-shadow 0.2s; background: #fff; }
+.search-bar input:focus { border-color: #0f3460; box-shadow: 0 0 0 2px rgba(15,52,96,0.1); }
+.search-bar button { padding: 10px 24px; background: #0f3460; color: #fff; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; white-space: nowrap; transition: background 0.2s; }
+.search-bar button:hover { background: #1a5aaa; }
+
+/* Split Layout */
+.content-split { display: flex; gap: 12px; height: calc(100vh - 140px); }
+#map-container { flex: 1; border-radius: 10px; overflow: hidden; border: 1px solid #ddd; min-width: 0; background: #e8e8e8; }
+.result-panel { width: 380px; min-width: 340px; background: #fff; border-radius: 10px; border: 1px solid #ddd; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.panel-header { padding: 12px 16px; font-weight: 600; border-bottom: 1px solid #eee; background: #fafafa; display: flex; justify-content: space-between; align-items: center; }
+#result-count { color: #0f3460; }
+#result-list { flex: 1; overflow-y: auto; padding: 8px; }
+.empty-hint { color: #999; text-align: center; padding: 40px 20px; font-size: 14px; }
+
+/* Result Cards */
+.result-card { padding: 14px; border: 1px solid #eee; border-radius: 8px; margin-bottom: 8px; cursor: pointer; transition: all 0.15s; background: #fff; }
+.result-card:hover { border-color: #0f3460; background: #f6f9ff; box-shadow: 0 2px 6px rgba(15,52,96,0.08); }
+.result-card.active { border-color: #0f3460; background: #eef3ff; box-shadow: 0 0 0 1px #0f3460; }
+.result-card .vessel-name { font-weight: 700; font-size: 15px; margin-bottom: 4px; color: #1a1a2e; }
+.result-card .voyage-info { color: #666; font-size: 13px; }
+.result-card .route { color: #0f3460; font-size: 13px; margin-top: 4px; font-weight: 500; }
+.result-card .dates { color: #888; font-size: 12px; margin-top: 4px; }
+.result-card .status { display: inline-block; padding: 2px 10px; border-radius: 10px; font-size: 11px; margin-top: 6px; font-weight: 500; }
+.status-scheduled { background: #e6f7ff; color: #1890ff; }
+.status-in_transit { background: #fff7e6; color: #fa8c16; }
+.status-arrived { background: #f6ffed; color: #52c41a; }
+
+/* Page Header */
+.page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.page-header h2 { font-size: 20px; color: #1a1a2e; }
+.page-header button { padding: 8px 18px; background: #0f3460; color: #fff; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 500; transition: background 0.2s; }
+.page-header button:hover { background: #1a5aaa; }
+
+/* Monitor Cards */
+.monitor-card { padding: 14px 16px; background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; margin-bottom: 8px; transition: box-shadow 0.2s; }
+.monitor-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.monitor-card .route { font-size: 15px; font-weight: 600; color: #0f3460; }
+.monitor-card .meta { color: #888; font-size: 12px; margin-top: 4px; }
+.monitor-card .actions { margin-top: 10px; display: flex; gap: 6px; }
+.monitor-card .actions button { padding: 5px 14px; border: 1px solid #d9d9d9; border-radius: 6px; cursor: pointer; font-size: 12px; background: #fff; transition: all 0.15s; }
+.monitor-card .actions button:hover { border-color: #0f3460; color: #0f3460; }
+.monitor-card .actions button.danger { color: #ff4d4f; border-color: #ffccc7; }
+.monitor-card .actions button.danger:hover { background: #fff1f0; border-color: #ff4d4f; }
+
+/* History Cards */
+.history-card { padding: 14px 16px; background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; margin-bottom: 8px; }
+.history-card .vessel-name { font-weight: 700; font-size: 15px; }
+.history-card .route { color: #0f3460; font-size: 13px; margin-top: 2px; }
+.history-card .meta { color: #888; font-size: 12px; margin-top: 4px; }
+
+/* Settings */
+.settings-form { background: #fff; padding: 24px; border-radius: 10px; border: 1px solid #e8e8e8; max-width: 500px; }
+.settings-form label { display: block; margin-bottom: 18px; font-size: 14px; color: #555; }
+.settings-form input[type="number"],
+.settings-form input[type="text"] { width: 100%; padding: 9px 12px; border: 1px solid #d9d9d9; border-radius: 6px; margin-top: 4px; font-size: 14px; outline: none; transition: border-color 0.2s; }
+.settings-form input:focus { border-color: #0f3460; }
+.checkbox-label { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.settings-form button { padding: 10px 24px; background: #0f3460; color: #fff; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 500; }
+
+/* Modal */
+.modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.45); display: flex; align-items: center; justify-content: center; z-index: 2000; }
+.modal-content { background: #fff; padding: 28px; border-radius: 12px; min-width: 360px; box-shadow: 0 8px 30px rgba(0,0,0,0.15); }
+.modal-content h3 { margin-bottom: 18px; font-size: 18px; color: #1a1a2e; }
+.modal-content input { width: 100%; padding: 10px 14px; border: 1px solid #d9d9d9; border-radius: 8px; margin-bottom: 12px; font-size: 14px; outline: none; }
+.modal-content input:focus { border-color: #0f3460; }
+.modal-actions { display: flex; gap: 8px; margin-top: 6px; }
+.modal-actions button { padding: 9px 22px; border-radius: 8px; cursor: pointer; border: none; font-size: 14px; font-weight: 500; }
+.modal-actions button:first-child { background: #0f3460; color: #fff; }
+.btn-secondary { background: #f0f0f0; color: #333; }
+
+/* Port markers */
+.port-marker { background: none !important; border: none !important; font-size: 18px; text-align: center; line-height: 20px; }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .content-split { flex-direction: column; height: auto; }
+  #map-container { height: 50vh; }
+  .result-panel { width: 100%; min-width: 0; max-height: 40vh; }
+  .nav-brand { font-size: 15px; margin-right: 16px; }
+  .nav-tab { padding: 6px 12px; font-size: 13px; }
+}
+
+/* Vessel Selection Popup */
+.vessel-modal .vessel-picker {
+  max-width: 480px;
+  width: 90%;
+}
+.modal-header {
+  text-align: center;
+  padding: 0 0 16px;
+  border-bottom: 1px solid var(--border-light);
+  margin-bottom: 12px;
+}
+.modal-header h3 {
+  margin: 0 0 6px;
+  font-size: 18px;
+  color: var(--brand-deep);
+}
+.modal-sub {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.vessel-pick-list {
+  max-height: 320px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.vessel-pick-card {
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition);
+  background: var(--bg-card);
+}
+.vessel-pick-card:hover {
+  border-color: var(--brand-light);
+  background: var(--brand-frost);
+  box-shadow: var(--shadow-sm);
+}
+.vp-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+.vp-info {
+  font-size: 12px;
+  color: var(--text-secondary);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.vp-count {
+  background: var(--brand-ice);
+  color: var(--brand-mid);
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+/* Mini Timeline in result cards */
+.mini-timeline{display:flex;align-items:center;gap:0;margin:8px 0 4px;font-size:10px}
+.tl-dot{background:var(--brand-ice);color:var(--brand-mid);padding:2px 8px;border-radius:10px;font-weight:500;white-space:nowrap}
+.tl-line{flex:1;height:1px;background:var(--border);min-width:8px}
+.route-desc{font-size:11px;color:var(--text-muted);margin-bottom:2px}
+/* Transit Timeline in result cards */
+.transit-timeline{display:flex;align-items:center;gap:0;margin:10px 0 6px;padding:4px 0}
+.tl-stop{display:flex;flex-direction:column;align-items:center;flex-shrink:0}
+.tl-port .tl-label{font-size:11px;font-weight:600;color:var(--brand-blue);background:var(--brand-ice);padding:2px 8px;border-radius:4px}
+.tl-way .tl-label{font-size:10px;color:var(--text-muted)}
+.tl-connector{flex:1;height:2px;background:var(--border);margin:0 2px;position:relative;min-width:12px;display:flex;align-items:center;justify-content:center}
+.tl-days{font-size:9px;color:var(--text-muted);background:var(--bg-main);padding:0 4px;white-space:nowrap}
+
+/* Itinerary Button */
+.itinerary-btn{display:block;width:100%;margin-top:8px;padding:6px;background:var(--brand-frost);border:1px solid var(--brand-ice);border-radius:var(--radius-sm);color:var(--brand-mid);font-size:12px;cursor:pointer;font-weight:500}
+.itinerary-btn:hover{background:var(--brand-ice);border-color:var(--brand-light)}
+
+/* Itinerary Popup */
+.itinerary-popup-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);z-index:10000;display:flex;align-items:center;justify-content:center}
+.itinerary-popup{background:var(--bg-card);border-radius:var(--radius-lg);padding:24px;max-width:420px;width:90%;max-height:70vh;overflow-y:auto;box-shadow:var(--shadow-lg)}
+.itinerary-header{text-align:center;margin-bottom:16px;position:relative}
+.itinerary-header h3{margin:0 0 4px;font-size:16px}
+.itinerary-route{font-size:12px;color:var(--text-muted)}
+.itinerary-close{position:absolute;top:0;right:0;background:none;border:none;font-size:18px;cursor:pointer;color:var(--text-muted)}
+.itinerary-close:hover{color:var(--text-primary)}
+.itinerary-list{display:flex;flex-direction:column;gap:0}
+.it-stop{display:flex;align-items:flex-start;gap:12px;padding:4px 0}
+.it-stop-icon{font-size:16px;flex-shrink:0;width:24px;text-align:center}
+.it-stop-port .it-stop-icon{font-size:20px}
+.it-stop-info{flex:1}
+.it-stop-name{font-size:13px;font-weight:600}
+.it-stop-port .it-stop-name{font-size:14px;color:var(--brand-blue)}
+.it-stop-days{font-size:11px;color:var(--text-muted);margin-top:2px}
+.it-connector{width:2px;height:16px;background:var(--border);margin-left:11px}
+.itinerary-footer{text-align:center;margin-top:12px;padding-top:12px;border-top:1px solid var(--border-light);font-size:13px;color:var(--text-secondary)}

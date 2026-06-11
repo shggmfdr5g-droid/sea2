@@ -1,0 +1,107 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>船期航线查询</title>
+<link rel="stylesheet" href="/leaflet.css" />
+<link rel="stylesheet" href="/css/app.css" />
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="nav-brand">🚢 船期航线查询</div>
+  <div class="nav-tabs">
+    <a href="#query" class="nav-tab active">航线查询</a>
+    <a href="#monitor" class="nav-tab">船期监控</a>
+    <a href="#history" class="nav-tab">历史记录</a>
+    <a href="#settings" class="nav-tab">设置</a>
+  </div>
+</nav>
+
+<div class="main-container">
+
+  <section id="page-query" class="page active">
+    <div class="search-bar">
+      <input type="text" id="origin-input" placeholder="起运港" autocomplete="off" list="port-list" />
+      <input type="text" id="dest-input" placeholder="目的港" autocomplete="off" list="port-list" />
+      <input type="text" id="vessel-input" placeholder="船名（可选）" autocomplete="off" list="vessel-suggestions" />
+      <button id="search-btn">🔍 查询</button>
+      <datalist id="port-list"></datalist>
+      <datalist id="vessel-suggestions"></datalist>
+    </div>
+    <div class="content-split">
+      <div id="map-container"></div>
+      <div class="result-panel">
+        <div class="panel-header">
+          航线结果 <span id="result-count">0</span> 条
+          <span id="search-status" style="font-weight:400;font-size:12px;color:#999"></span>
+        </div>
+        <div id="result-list">
+          <div class="empty-hint">输入起运港和目的港，点击查询</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="page-monitor" class="page">
+    <div class="page-header">
+      <h2>📡 船期监控</h2>
+      <button id="add-monitor-btn">+ 添加监控</button>
+    </div>
+    <div id="monitor-list"><p class="empty-hint">暂无监控任务</p></div>
+  </section>
+
+  <section id="page-history" class="page">
+    <div class="page-header"><h2>📋 历史记录</h2></div>
+    <div id="history-list"><p class="empty-hint">暂无历史记录</p></div>
+  </section>
+
+  <section id="page-settings" class="page">
+    <div class="page-header"><h2>⚙️ 设置</h2></div>
+    <div class="settings-form">
+      <label>爬取间隔（分钟）
+        <input type="number" id="setting-interval" value="30" min="5" max="1440" />
+      </label>
+      <label>数据源 URL
+        <input type="text" id="setting-source" value="https://www.yundangnet.com/web/html/voyagePrediction.php" />
+      </label>
+      <label class="checkbox-label">
+        <input type="checkbox" id="setting-notify" checked /> 启用浏览器通知
+      </label>
+      <button id="save-settings-btn">保存设置</button>
+    </div>
+  </section>
+</div>
+
+<div id="monitor-modal" class="modal" style="display:none">
+  <div class="modal-content">
+    <h3>添加监控任务</h3>
+    <input type="text" id="mon-origin" placeholder="起运港" autocomplete="off" list="port-list" />
+    <input type="text" id="mon-dest" placeholder="目的港" autocomplete="off" list="port-list" />
+    <div class="modal-actions">
+      <button id="mon-confirm">确认</button>
+      <button id="mon-cancel" class="btn-secondary">取消</button>
+    </div>
+  </div>
+</div>
+
+<!-- Vessel Selection Popup -->
+<div id="vessel-modal" class="modal vessel-modal" style="display:none">
+  <div class="modal-content vessel-picker">
+    <div class="modal-header">
+      <h3>🚢 选择船名</h3>
+      <span class="modal-sub">找到多个船期，请选择一个船名查看详情</span>
+    </div>
+    <div id="vessel-pick-list" class="vessel-pick-list"></div>
+    <div class="modal-actions">
+      <button id="vessel-show-all" class="btn-outline">显示全部结果</button>
+      <button id="vessel-cancel" class="btn-secondary">取消</button>
+    </div>
+  </div>
+</div>
+
+<script src="/leaflet.js"></script>
+<script type="module" src="/js/app.js"></script>
+</body>
+</html>
